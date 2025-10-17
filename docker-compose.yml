@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16.3
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: social
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5431:5432" # Expose PostgreSQL on port 5431 to prevent conflicts with my local PostgreSQL instance (ports 5432 and 5433 some how)
+  redis:
+    image: redis:6.2-alpine
+    restart: unless-stopped
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+  redis-commander: # Redis Commander for managing Redis via a web interface
+    image: rediscommander/redis-commander:latest
+    hostname: redis-commander
+    container_name: redis-commander
+    environment:
+      - REDIS_HOST=redis
+    ports: # Can access redis-commnander via http://localhost:8081
+      - "8081:8081"
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  redis_data:

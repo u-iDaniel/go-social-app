@@ -1,0 +1,23 @@
+name: release-please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      # Automate releases based on Convetional Commit Messages
+      - uses: googleapis/release-please-action@v4
+        with:
+          # Personal Access Token with `repo` scope and pr, content, actions write access
+          token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
+          release-type: simple
+        
+          
